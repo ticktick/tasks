@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+
+{% block body %}
+
+<a href="/task">← Назад</a>
+
+{% include 'task.form.html' with {'actionUrl': '/task/change'} %}
+
+{% endblock %}

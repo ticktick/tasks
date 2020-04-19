@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block body %}
+<div class="row login-status">
+    <div class="col-sm">
+        {% if is_admin %}
+        <a class="btn btn-primary float-right" href="/user/logout" role="button">Выйти</a>
+        {% else %}
+        <a class="btn btn-primary float-right" href="/user/login" role="button">Войти</a>
+        {% endif %}
+    </div>
+</div>
+
+<div class="list-group">
+
+    {% if tasks %}
+    <div class="col-sm">
+        Сортировка:
+        {% for button in sort_buttons %}
+        <a href="{{ button.url }}" type="button"
+           class="btn btn-sm btn-{% if button.active %}success{% else %}primary{% endif %}">
+            {{ button.title }}
+        </a>
+        {% endfor %}
+    </div>
+
+    {% include 'pagination.html' %}
+    {% endif %}
+
+    {% for task in tasks %}
+    <div class="list-group-item list-group-item-action flex-column align-items-start">
+        <div class="d-flex w-100 justify-content-between">
+            <h5 class="mb-1">{{ task.user_name|e }} ({{ task.email|e }})</h5>
+        </div>
+        <p class="mb-1">{{ task.text|e }}</p>
+        <small>{% if task.status == 'todo' %}<span class="badge badge-primary">не выполнено</span>{% else %}<span
+                class="badge badge-success">✓ выполнено</span>{% endif %}
+        </small>
+        <small>{% if task.admin_fixed %}<span
+                class="badge badge-warning">отредактировано администратором{% endif %}</span></small>
+
+        {% if is_admin %}
+        <a class="btn btn-primary float-right" href="/task/change/?id={{ task.id }}" role="button">Редактировать</a>
+        {% endif %}
+    </div>
+    {% endfor %}
+
+</div>
+
+<div class="list-group mt-3">
+    <div class="col-6"><h4>Добавить задачу</h4></div>
+    <div class="col-6">
+    {% include 'task.form.html' with {'actionUrl': '/task/add'} %}
+    </div>
+</div>
+
+{% endblock %}

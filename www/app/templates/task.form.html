@@ -1,0 +1,28 @@
+<form method="post" enctype="multipart/form-data" action="{{ actionUrl }}">
+    <div class="form-group">
+        <label for="task-user-name">Имя пользователя</label>
+        <input type="text" name="user_name" class="form-control" id="task-user-name" {% if task %}disabled
+               value="{{ task.user_name }}" {% endif %}>
+    </div>
+    <div class="form-group">
+        <label for="task-email">E-mail</label>
+        <input type="text" name="email" class="form-control" id="task-email" {% if task %}disabled
+               value="{{ task.email }}" {% endif %}>
+    </div>
+    <div class="form-group">
+        <label for="task-text">Текст задачи</label>
+        <textarea name="text" class="form-control" id="task-text"
+                  rows="3">{% if task %}{{ task.text }}{% endif %}</textarea>
+    </div>
+    {% if change %}
+    <input type="hidden" name="id" value="{{ task.id }}">
+    <div class="form-group">
+        <label for="task-text">Выполнено</label>
+        <input type="checkbox" id="task-status" name="status" {% if task.status== "done" %}checked="checked"{% endif %}>
+    </div>
+    {% endif %}
+
+    {% include 'errors.html' %}
+
+    <button type="submit" class="btn btn-primary">Сохранить</button>
+</form>

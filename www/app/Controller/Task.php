@@ -23,13 +23,13 @@ class Task extends Controller implements ControllerInterface
         $taskModel = new \App\Model\Task();
 
         // @TODO move to config
-        $pagePerPage = 3;
+        $itemsPerPage = 3;
 
         $sort = $this->request->get('sort', 'id');
         $ord = $this->request->get('ord', Paginator::ORDER_ASC);
         $page = $this->request->get('page', 1);
 
-        $paginator = new Paginator($pagePerPage);
+        $paginator = new Paginator($itemsPerPage);
         $paginator->setSortField($sort);
         $paginator->setOrder($ord);
         $paginator->setPage($page);
@@ -38,7 +38,7 @@ class Task extends Controller implements ControllerInterface
         $taskModel->setSortField($sort);
         $taskModel->setSortOrder($ord);
         $tasksCount = $taskModel->count();
-        $tasks = $taskModel->find($page, $pagePerPage);
+        $tasks = $taskModel->find($page, $itemsPerPage);
 
         $paginator->setCount($tasksCount);
 

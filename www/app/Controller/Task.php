@@ -101,7 +101,11 @@ class Task extends Controller implements ControllerInterface
 
         if ($task && !empty($data)) {
             $data['status'] = isset($data['status']) ? \App\Model\Task::STATUS_DONE : \App\Model\Task::STATUS_TODO;
-            if (strcmp($task['text'], $data['text']) != 0) {
+
+            $textChangedRule = (new ValidatorRule('Текст', $data['text']))->equalsString($task['text']);
+            $textChanged = (bool)$textChangedRule->getError();
+
+            if ($textChanged) {
                 $data['admin_fixed'] = true;
             }
             $taskModel->update($data);

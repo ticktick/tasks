@@ -6,6 +6,7 @@ use Core\Controller;
 use Core\ControllerInterface;
 use Core\Exception\HttpRedirect;
 use Core\Validator;
+use Core\ValidatorRule;
 
 class User extends Controller implements ControllerInterface
 {
@@ -46,8 +47,12 @@ class User extends Controller implements ControllerInterface
         $auth = false;
 
         $validator = new Validator();
-        $validator->name('Имя')->value($this->request->post('name'))->equalsString(self::ADMIN_NAME)->required();
-        $validator->name('Пароль')->value($this->request->post('password'))->equalsString(self::ADMIN_PASSWORD)->required();
+
+        $validator
+            ->addRule((new ValidatorRule('Имя', $this->request->post('name')))->equalsString(self::ADMIN_NAME)->required())
+            ->addRule((new ValidatorRule('Пароль', $this->request->post('password')))->equalsString(self::ADMIN_PASSWORD)->required())
+            ->validate();
+
         if ($validator->isSuccess()) {
             $request->makeAdmin();
             $auth = true;

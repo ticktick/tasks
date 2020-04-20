@@ -5,65 +5,41 @@ namespace Core;
 class Validator
 {
 
-    private $name;
-    private $value;
-
+    /** @var ValidatorRule[] */
+    public $rules = [];
     public $errors = [];
 
-    public function name($name)
+    public function addRule(ValidatorRule $rule): Validator
     {
-        $this->name = $name;
-        return $this;
-
-    }
-
-    public function value($value)
-    {
-        $this->value = $value;
+        $this->rules[] = $rule;
         return $this;
     }
 
-    public function addError($name, $value)
+    public function validate()
     {
-        $this->errors[$name] = $value;
-    }
-
-    public function required()
-    {
-        if ($this->value == '' || $this->value == null) {
-            $this->addError($this->name, 'Не задано поле ' . $this->name);
+        foreach ($this->rules as $rule){
+            if($error = $rule->getError()){
+                $this->addError($rule->getName(), $error);
+            }
         }
-        return $this;
     }
 
-    public function isEmail()
+    public function addError($name, $message)
     {
-        if (filter_var($this->value, FILTER_VALIDATE_EMAIL)) {
-            return $this;
-        }
-        $this->addError($this->name, 'Неверный e-mail ' . $this->value);
-        return $this;
+        $this->errors[$name] = $message;
     }
 
-    public function equalsString(string $str)
-    {
-        if (strcmp($this->value, $str) != 0) {
-            $this->addError($this->name, 'Неверное значение ' . $this->name);
-        }
-        return $this;
-    }
-
-    public function isSuccess()
+    public function isSuccess(): bool
     {
         return empty($this->errors);
     }
 
-    public function getErrors()
+    public function getErrors(): array
     {
         return $this->errors;
     }
 
-    public function getRedirectQuery()
+    public function getRedirectQuery(): string
     {
         if ($this->isSuccess()) {
             $query = ['success' => 1];

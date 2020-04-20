@@ -7,6 +7,7 @@ use Core\ControllerInterface;
 use Core\Exception\HttpRedirect;
 use Core\Paginator;
 use Core\Validator;
+use Core\ValidatorRule;
 
 class Task extends Controller implements ControllerInterface
 {
@@ -64,9 +65,13 @@ class Task extends Controller implements ControllerInterface
         $taskModel = new \App\Model\Task();
 
         $validator = new Validator();
-        $validator->name('Имя')->value($this->request->post('user_name'))->required();
-        $validator->name('E-mail')->value($this->request->post('email'))->isEmail()->required();
-        $validator->name('Текст задачи')->value($this->request->post('text'))->required();
+
+        $validator
+            ->addRule((new ValidatorRule('Поля', $this->request->post()))->onlyFields(['user_name', 'email', 'text']))
+            ->addRule((new ValidatorRule('Имя', $this->request->post('user_name')))->required())
+            ->addRule((new ValidatorRule('E-mail', $this->request->post('email')))->isEmail()->required())
+            ->addRule((new ValidatorRule('Текст задачи', $this->request->post('text')))->required())
+            ->validate();
 
         if ($validator->isSuccess()) {
             $taskModel->add($this->request->post());

@@ -11,10 +11,6 @@ use Core\ValidatorRule;
 class User extends Controller implements ControllerInterface
 {
 
-    // @TODO move to config
-    const ADMIN_NAME = 'admin';
-    const ADMIN_PASSWORD = '123';
-
     /**
      * @return string
      * @throws HttpRedirect
@@ -46,11 +42,13 @@ class User extends Controller implements ControllerInterface
         $request = $this->request;
         $auth = false;
 
-        $validator = new Validator();
+        $adminName = $this->config['admin']['name'];
+        $adminPassword = $this->config['admin']['password'];
 
+        $validator = new Validator();
         $validator
-            ->addRule((new ValidatorRule('Имя', $this->request->post('name')))->equalsString(self::ADMIN_NAME)->required())
-            ->addRule((new ValidatorRule('Пароль', $this->request->post('password')))->equalsString(self::ADMIN_PASSWORD)->required())
+            ->addRule((new ValidatorRule('Имя', $this->request->post('name')))->equalsString($adminName)->required())
+            ->addRule((new ValidatorRule('Пароль', $this->request->post('password')))->equalsString($adminPassword)->required())
             ->validate();
 
         if ($validator->isSuccess()) {

@@ -7,16 +7,18 @@ class Request
 
     private $resource;
     private $action;
+    private $adminCookieName;
+    private $adminCookieHash;
 
-    const ADMIN_COOKIE_NAME = 'auth';
-    const ADMIN_COOKIE_HASH = '6756088577abe3c76de3cf1bb0c04991';
-
-    public function __construct()
+    public function __construct(array $config)
     {
         list($resourceAndAction) = explode('?', $_SERVER['REQUEST_URI']);
         $requestUri = explode("/", $resourceAndAction);
         $this->resource = !empty($requestUri[1]) ? strtolower($requestUri[1]) : 'index';
         $this->action = !empty($requestUri[2]) ? strtolower($requestUri[2]) : 'index';
+
+        $this->adminCookieName = $config['admin']['cookie_name'];
+        $this->adminCookieHash = $config['admin']['cookie_hash'];
     }
 
     public function setResource($resource)
@@ -41,18 +43,18 @@ class Request
 
     public function makeAdmin()
     {
-        setcookie(self::ADMIN_COOKIE_NAME, self::ADMIN_COOKIE_HASH, time() + 86400, '/');
+        setcookie($this->adminCookieName, $this->adminCookieHash, time() + 86400, '/');
     }
 
     public function revokeAdmin()
     {
-        unset($_COOKIE[self::ADMIN_COOKIE_NAME]);
-        setcookie(self::ADMIN_COOKIE_NAME, null, -1, '/');
+        unset($_COOKIE[$this->adminCookieName]);
+        setcookie($this->adminCookieName, null, -1, '/');
     }
 
     public function isAdmin()
     {
-        return isset($_COOKIE[self::ADMIN_COOKIE_NAME]) && $_COOKIE[self::ADMIN_COOKIE_NAME] == self::ADMIN_COOKIE_HASH;
+        return isset($_COOKIE[$this->adminCookieName]) && $_COOKIE[$this->adminCookieName] == $this->adminCookieHash;
     }
 
     public function p($param = null, $default = null)

@@ -4,22 +4,22 @@ namespace Core;
 
 use Core\Exception\ModelTableNotDefined;
 
-class Model implements ModelInterface
+abstract class Model implements ModelInterface
 {
 
-    private $database;
+    private static $database;
     protected $table;
-    // @TODO move to config
-    private $limit = 3;
     private $sortField = null;
     private $sortOrder = null;
 
     /**
      * @throws ModelTableNotDefined
      */
-    public function __construct()
+    public function __construct(array $dbconfig)
     {
-        $this->database = new Database();
+        if (!self::$database) {
+            self::$database = new Database($dbconfig);
+        }
         if (!$this->table) {
             throw new ModelTableNotDefined();
         }
@@ -42,7 +42,7 @@ class Model implements ModelInterface
 
     public function findById(int $id)
     {
-        $stmt = $this->database->query('SELECT * FROM ' . $this->table . ' WHERE id = :id',
+        $stmt = self::$database->query('SELECT * FROM ' . $this->table . ' WHERE id = :id',
             ['id' => $id]);
         $row = $stmt->fetch();
         return $row;
@@ -50,12 +50,12 @@ class Model implements ModelInterface
 
     public function add(array $data = [])
     {
-        return $this->database->insert($this->table, $data);
+        return self::$database->insert($this->table, $data);
     }
 
     public function update(array $data = [])
     {
-        return $this->database->update($this->table, $data);
+        return self::$database->update($this->table, $data);
     }
 
     /**
@@ -64,7 +64,7 @@ class Model implements ModelInterface
      */
     public function count(): int
     {
-        $stmt = $this->database->query('SELECT count(*) AS cnt FROM ' . $this->table);
+        $stmt = self::$database->query('SELECT count(*) AS cnt FROM ' . $this->table);
 
         $row = $stmt->fetch();
         return $row['cnt'];
@@ -82,7 +82,7 @@ class Model implements ModelInterface
         $filedsQuery = $fields ? implode(', ', $fields) : '*';
         $limitQuery = sprintf('LIMIT %d OFFSET %d', $pagePerPage, ($page - 1) * $pagePerPage);
         $orderQuery = sprintf('ORDER BY %s %s', $this->sortField, $this->sortOrder);
-        $stmt = $this->database->query('SELECT ' . $filedsQuery . ' FROM ' . $this->table . ' ' .
+        $stmt = self::$database->query('SELECT ' . $filedsQuery . ' FROM ' . $this->table . ' ' .
             $orderQuery . ' ' . $limitQuery, []);
 
         $result = [];

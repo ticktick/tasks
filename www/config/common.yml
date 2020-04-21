@@ -1,0 +1,14 @@
+items_per_page: 3
+
+admin:
+  name: admin
+  password: 123
+  cookie_name: auth
+  cookie_hash: 6756088577abe3c76de3cf1bb0c04991
+
+database:
+  driver: pgsql
+  host: db
+  dbname: tasks
+  username: tasks
+  password: password

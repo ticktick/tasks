@@ -10,10 +10,18 @@ class Application
 {
     /** @var Request */
     private $request;
+    /** @var array */
+    private $config;
+    /** @var ModelFactory */
+    private $modelFactory;
 
-    public function __construct($config)
+    public function __construct(array $config)
     {
-        $this->setRequest(new Request());
+        $this->setConfig($config);
+        $this->setRequest(new Request($config));
+
+        $modelFactory = new ModelFactory($config['database']);
+        $this->setModelFactory($modelFactory);
     }
 
     public function run()
@@ -59,6 +67,26 @@ class Application
         return $this->request;
     }
 
+    public function setConfig(array $config)
+    {
+        $this->config = $config;
+    }
+
+    public function getConfig(): array
+    {
+        return $this->config;
+    }
+
+    public function setModelFactory(ModelFactory $modelFactory)
+    {
+        $this->modelFactory = $modelFactory;
+    }
+
+    public function getModelFactory(): ModelFactory
+    {
+        return $this->modelFactory;
+    }
+
     /**
      * @throws ControllerNotExists
      */
@@ -68,7 +96,7 @@ class Application
         if (!class_exists($controllerClassName)) {
             throw new ControllerNotExists();
         }
-        return new $controllerClassName($this->getRequest());
+        return new $controllerClassName($this->getRequest(), $this->getConfig(), $this->getModelFactory());
     }
 
     private function render($content)

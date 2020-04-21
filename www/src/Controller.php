@@ -9,12 +9,18 @@ abstract class Controller implements ControllerInterface
 
     /** @var Request */
     protected $request;
+    /** @var array */
+    protected $config;
+    /** @var ModelFactory */
+    protected $modelFactory;
     /** @var View */
     public $view;
 
-    public function __construct(Request $request)
+    public function __construct(Request $request, array $config, ModelFactory $modelFactory)
     {
         $this->request = $request;
+        $this->config = $config;
+        $this->modelFactory = $modelFactory;
     }
 
     public function init()

@@ -9,11 +9,10 @@ class Database
 
     private $pdo;
 
-    public function __construct()
+    public function __construct(array $config)
     {
-        // @TODO move to config
-        $dsn = 'pgsql:host=db;dbname=tasks;';
-        $this->pdo = new \PDO($dsn, 'tasks', 'password');
+        $dsn = sprintf('%s:host=%s;dbname=%s;', $config['driver'], $config['host'], $config['dbname']);
+        $this->pdo = new \PDO($dsn, $config['username'], $config['password']);
     }
 
     private function getErrorMessage(\PDOStatement $stmt)

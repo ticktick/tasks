@@ -14,16 +14,13 @@ class Task extends Controller implements ControllerInterface
 
     /**
      * @return string
-     * @throws \Core\Exception\DatabaseError
-     * @throws \Core\Exception\ModelTableNotDefined
      * @throws \Core\Exception\ViewError
      */
     public function indexAction()
     {
-        $taskModel = new \App\Model\Task();
+        $taskModel = $this->modelFactory->getModel(\App\Model\Task::class);
 
-        // @TODO move to config
-        $itemsPerPage = 3;
+        $itemsPerPage = $this->config['items_per_page'];
 
         $sort = $this->request->get('sort', 'id');
         $ord = $this->request->get('ord', Paginator::ORDER_ASC);
@@ -62,7 +59,7 @@ class Task extends Controller implements ControllerInterface
      */
     public function addAction()
     {
-        $taskModel = new \App\Model\Task();
+        $taskModel = $this->modelFactory->getModel(\App\Model\Task::class);
 
         $validator = new Validator();
 
@@ -88,7 +85,7 @@ class Task extends Controller implements ControllerInterface
      */
     public function changeAction()
     {
-        $taskModel = new \App\Model\Task();
+        $taskModel = $this->modelFactory->getModel(\App\Model\Task::class);
 
         $id = $this->request->p('id');
 

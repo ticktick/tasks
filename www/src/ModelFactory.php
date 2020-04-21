@@ -2,6 +2,8 @@
 
 namespace Core;
 
+use Core\Exception\ModelNotExists;
+
 class ModelFactory {
 
     private $dbconfig;
@@ -13,6 +15,9 @@ class ModelFactory {
 
     public function getModel(string $class): ModelInterface
     {
+        if(!class_exists($class)){
+            throw new ModelNotExists($class);
+        }
         return new $class($this->dbconfig);
     }
 }

@@ -14,6 +14,7 @@ class Task extends Controller implements ControllerInterface
 
     /**
      * @return string
+     * @throws \Core\Exception\ModelNotExists
      * @throws \Core\Exception\ViewError
      */
     public function indexAction()
@@ -55,7 +56,7 @@ class Task extends Controller implements ControllerInterface
 
     /**
      * @throws HttpRedirect
-     * @throws \Core\Exception\ModelTableNotDefined
+     * @throws \Core\Exception\ModelNotExists
      */
     public function addAction()
     {
@@ -80,7 +81,7 @@ class Task extends Controller implements ControllerInterface
     /**
      * @return string
      * @throws HttpRedirect
-     * @throws \Core\Exception\ModelTableNotDefined
+     * @throws \Core\Exception\ModelNotExists
      * @throws \Core\Exception\ViewError
      */
     public function changeAction()

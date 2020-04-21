@@ -11,7 +11,7 @@ class ModelFactory {
         $this->dbconfig = $dbconfig;
     }
 
-    public function getModel(string $class)
+    public function getModel(string $class): ModelInterface
     {
         return new $class($this->dbconfig);
     }

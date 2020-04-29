@@ -57,14 +57,6 @@ class Request
         return isset($_COOKIE[$this->adminCookieName]) && $_COOKIE[$this->adminCookieName] == $this->adminCookieHash;
     }
 
-    public function p($param = null, $default = null)
-    {
-        if (is_null($param)) {
-            return $_REQUEST;
-        }
-        return $_REQUEST[$param] ?? $default;
-    }
-
     public function get($param = null, $default = null)
     {
         if (is_null($param)) {

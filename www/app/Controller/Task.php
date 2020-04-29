@@ -88,7 +88,7 @@ class Task extends Controller implements ControllerInterface
     {
         $taskModel = $this->modelFactory->getModel(\App\Model\Task::class);
 
-        $id = $this->request->p('id');
+        $id = $this->request->post('id');
 
         if (!$id || !$this->request->isAdmin()) {
             $this->redirect('/task');

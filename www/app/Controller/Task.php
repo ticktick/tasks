@@ -25,7 +25,20 @@ class Task extends Controller implements ControllerInterface
 
         $sort = $this->request->get('sort', 'id');
         $ord = $this->request->get('ord', Paginator::ORDER_ASC);
-        $page = $this->request->get('page', 1);
+        $page = (int)$this->request->get('page', 1);
+
+        $validator = new Validator();
+        $errors = [];
+
+        $validator
+            ->addRule((new ValidatorRule('Поле сортировки', $sort))->inList(['id', 'user_name', 'email', 'status']))
+            ->addRule((new ValidatorRule('Направление сортировки', $ord))->inList([Paginator::ORDER_ASC, Paginator::ORDER_DESC]))
+            ->validate();
+        if(!$validator->isSuccess()){
+            $errors = $validator->getErrors();
+            $sort = 'id';
+            $ord = Paginator::ORDER_ASC;
+        }
 
         $paginator = new Paginator($itemsPerPage);
         $paginator->setSortField($sort);
@@ -42,7 +55,7 @@ class Task extends Controller implements ControllerInterface
 
         $this->getView()->setData([
             'tasks' => $tasks,
-            'errors' => $this->request->get('errors', []),
+            'errors' => count($errors) ? $errors : $this->request->get('errors', []),
             'success' => $this->request->get('success', null),
             'pages' => $paginator->getPages(),
             'sort_buttons' => $paginator->getSortButtons(),

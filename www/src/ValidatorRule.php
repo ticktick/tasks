@@ -52,6 +52,14 @@ class ValidatorRule
         return $this;
     }
 
+    public function inList(array $values): ValidatorRule
+    {
+        if (!in_array($this->value, $values)) {
+            $this->error = 'Недопустимое значение ' . $this->name;
+        }
+        return $this;
+    }
+
     public function onlyFields(array $fields): ValidatorRule
     {
         $excess = array_diff(array_keys($this->value), $fields);

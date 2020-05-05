@@ -17,7 +17,7 @@ class Task extends Controller implements ControllerInterface
      * @throws \Core\Exception\ModelNotExists
      * @throws \Core\Exception\ViewError
      */
-    public function indexAction()
+    public function indexAction(): string
     {
         $taskModel = $this->modelFactory->getModel(\App\Model\Task::class);
 
@@ -71,7 +71,7 @@ class Task extends Controller implements ControllerInterface
      * @throws HttpRedirect
      * @throws \Core\Exception\ModelNotExists
      */
-    public function addAction()
+    public function addAction(): void
     {
         $taskModel = $this->modelFactory->getModel(\App\Model\Task::class);
 
@@ -97,11 +97,11 @@ class Task extends Controller implements ControllerInterface
      * @throws \Core\Exception\ModelNotExists
      * @throws \Core\Exception\ViewError
      */
-    public function changeAction()
+    public function changeAction(): string
     {
         $taskModel = $this->modelFactory->getModel(\App\Model\Task::class);
 
-        $id = $this->request->post('id');
+        $id = $this->request->get('id') ?? $this->request->post('id');
 
         if (!$id || !$this->request->isAdmin()) {
             $this->redirect('/task');

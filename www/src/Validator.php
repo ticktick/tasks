@@ -15,7 +15,7 @@ class Validator
         return $this;
     }
 
-    public function validate()
+    public function validate(): void
     {
         foreach ($this->rules as $rule){
             if($error = $rule->getError()){
@@ -24,7 +24,7 @@ class Validator
         }
     }
 
-    public function addError($name, $message)
+    public function addError($name, $message): void
     {
         $this->errors[$name] = $message;
     }

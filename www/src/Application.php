@@ -24,7 +24,7 @@ class Application
         $this->setModelFactory($modelFactory);
     }
 
-    public function run()
+    public function run(): bool
     {
         try {
             $controller = $this->getController();
@@ -57,7 +57,7 @@ class Application
         return true;
     }
 
-    public function setRequest(Request $request)
+    public function setRequest(Request $request): void
     {
         $this->request = $request;
     }
@@ -67,7 +67,7 @@ class Application
         return $this->request;
     }
 
-    public function setConfig(array $config)
+    public function setConfig(array $config): void
     {
         $this->config = $config;
     }
@@ -77,7 +77,7 @@ class Application
         return $this->config;
     }
 
-    public function setModelFactory(ModelFactory $modelFactory)
+    public function setModelFactory(ModelFactory $modelFactory): void
     {
         $this->modelFactory = $modelFactory;
     }
@@ -99,13 +99,13 @@ class Application
         return new $controllerClassName($this->getRequest(), $this->getConfig(), $this->getModelFactory());
     }
 
-    private function render($content)
+    private function render($content): bool
     {
         echo $content;
         return true;
     }
 
-    private function getActionName()
+    private function getActionName(): string
     {
         return $this->getRequest()->getAction() . 'Action';
     }

@@ -23,12 +23,12 @@ abstract class Controller implements ControllerInterface
         $this->modelFactory = $modelFactory;
     }
 
-    public function init()
+    public function init(): void
     {
         $this->setView(new View());
     }
 
-    public function setView(View $view)
+    public function setView(View $view): void
     {
         $this->view = $view;
     }
@@ -42,7 +42,7 @@ abstract class Controller implements ControllerInterface
      * @param $url
      * @throws HttpRedirect
      */
-    public function redirect($url)
+    public function redirect($url): void
     {
         throw new HttpRedirect($url);
     }

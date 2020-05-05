@@ -21,38 +21,38 @@ class Request
         $this->adminCookieHash = $config['admin']['cookie_hash'];
     }
 
-    public function setResource($resource)
+    public function setResource($resource): void
     {
         $this->resource = $resource;
     }
 
-    public function getResource()
+    public function getResource(): string
     {
         return $this->resource;
     }
 
-    public function setAction($action)
+    public function setAction($action): void
     {
         $this->action = $action;
     }
 
-    public function getAction()
+    public function getAction(): string
     {
         return $this->action;
     }
 
-    public function makeAdmin()
+    public function makeAdmin(): bool
     {
-        setcookie($this->adminCookieName, $this->adminCookieHash, time() + 86400, '/');
+        return setcookie($this->adminCookieName, $this->adminCookieHash, time() + 86400, '/');
     }
 
-    public function revokeAdmin()
+    public function revokeAdmin(): bool
     {
         unset($_COOKIE[$this->adminCookieName]);
-        setcookie($this->adminCookieName, null, -1, '/');
+        return setcookie($this->adminCookieName, null, -1, '/');
     }
 
-    public function isAdmin()
+    public function isAdmin(): bool
     {
         return isset($_COOKIE[$this->adminCookieName]) && $_COOKIE[$this->adminCookieName] == $this->adminCookieHash;
     }

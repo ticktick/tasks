@@ -6,7 +6,7 @@ class ValidatorRule
 {
 
     /** @var string */
-    public $error = null;
+    public $error = '';
     /** @var string */
     private $name;
     private $value;
@@ -22,7 +22,7 @@ class ValidatorRule
         return $this->name;
     }
 
-    public function getError()
+    public function getError(): string
     {
         return $this->error;
     }

@@ -15,7 +15,7 @@ class Database
         $this->pdo = new \PDO($dsn, $config['username'], $config['password']);
     }
 
-    private function getErrorMessage(\PDOStatement $stmt)
+    private function getErrorMessage(\PDOStatement $stmt): string
     {
         $errorInfo = $stmt->errorInfo();
         if(count($errorInfo) == 3){

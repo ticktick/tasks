@@ -25,17 +25,17 @@ abstract class Model implements ModelInterface
         }
     }
 
-    public function setLimit(int $limit)
+    public function setLimit(int $limit): void
     {
         $this->limit = $limit;
     }
 
-    public function setSortField(string $field)
+    public function setSortField(string $field): void
     {
         $this->sortField = $field;
     }
 
-    public function setSortOrder(string $order)
+    public function setSortOrder(string $order): void
     {
         $this->sortOrder = $order;
     }
@@ -48,12 +48,12 @@ abstract class Model implements ModelInterface
         return $row;
     }
 
-    public function add(array $data = [])
+    public function add(array $data = []): bool
     {
         return self::$database->insert($this->table, $data);
     }
 
-    public function update(array $data = [])
+    public function update(array $data = []): bool
     {
         return self::$database->update($this->table, $data);
     }

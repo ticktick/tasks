@@ -24,7 +24,7 @@ class View
      * @return $this
      * @throws ViewError
      */
-    public function setTemplate(string $template)
+    public function setTemplate(string $template): View
     {
         try {
             $this->template = $this->twig->load($template);
@@ -34,7 +34,7 @@ class View
         return $this;
     }
 
-    public function setData(array $data)
+    public function setData(array $data): View
     {
         $this->data = $data;
         return $this;

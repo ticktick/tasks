@@ -16,7 +16,7 @@ class User extends Controller implements ControllerInterface
      * @throws HttpRedirect
      * @throws \Core\Exception\ViewError
      */
-    public function loginAction()
+    public function loginAction(): string
     {
         $request = $this->request;
         $auth = $request->isAdmin();
@@ -37,7 +37,7 @@ class User extends Controller implements ControllerInterface
     /**
      * @throws HttpRedirect
      */
-    public function authAction()
+    public function authAction(): void
     {
         $request = $this->request;
         $auth = false;
@@ -66,7 +66,7 @@ class User extends Controller implements ControllerInterface
     /**
      * @throws HttpRedirect
      */
-    public function logoutAction()
+    public function logoutAction(): void
     {
         $this->request->revokeAdmin();
         $this->redirect('/task');

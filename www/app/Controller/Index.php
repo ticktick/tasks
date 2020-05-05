@@ -12,7 +12,7 @@ class Index extends Controller implements ControllerInterface
     /**
      * @throws HttpRedirect
      */
-    public function indexAction()
+    public function indexAction(): void
     {
         $this->redirect('/task');
     }

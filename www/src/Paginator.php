@@ -31,12 +31,12 @@ class Paginator
         $this->itemsPerPage = $itemsPerPage;
     }
 
-    private function makeQuery(string $url, string $page, string $field, string $order)
+    private function makeQuery(string $url, string $page, string $field, string $order): string
     {
         return sprintf('%s?page=%s&sort=%s&ord=%s', $url, $page, $field, $order);
     }
 
-    public function getPages()
+    public function getPages(): array
     {
         $pages = [];
         $pagesCount = ceil($this->count / $this->itemsPerPage);
@@ -55,7 +55,7 @@ class Paginator
         return $pages;
     }
 
-    public function getSortButtons()
+    public function getSortButtons(): array
     {
         $buttons = [];
         foreach ($this->sortFields as $field => $title) {
@@ -76,7 +76,7 @@ class Paginator
         return $buttons;
     }
 
-    public function setSortField(string $sortField)
+    public function setSortField(string $sortField): void
     {
         $this->sortField = $sortField;
     }
@@ -86,7 +86,7 @@ class Paginator
         return $this->sortField;
     }
 
-    public function setOrder(string $order)
+    public function setOrder(string $order): void
     {
         $this->order = $order;
     }
@@ -96,7 +96,7 @@ class Paginator
         return $this->order;
     }
 
-    public function setPage(int $page)
+    public function setPage(int $page): void
     {
         $this->page = $page;
     }
@@ -106,7 +106,7 @@ class Paginator
         return $this->page;
     }
 
-    public function setCount(int $count)
+    public function setCount(int $count): void
     {
         $this->count = $count;
     }
@@ -116,7 +116,7 @@ class Paginator
         return $this->count;
     }
 
-    public function setUrl(string $url)
+    public function setUrl(string $url): void
     {
         $this->url = $url;
     }

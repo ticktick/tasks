@@ -13,9 +13,4 @@ class Task extends Model implements ModelInterface
 
     protected $table = 'task';
 
-    public function getStatus()
-    {
-
-    }
-
 }

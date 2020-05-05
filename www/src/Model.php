@@ -40,6 +40,11 @@ abstract class Model implements ModelInterface
         $this->sortOrder = $order;
     }
 
+    /**
+     * @param int $id
+     * @return mixed
+     * @throws Exception\DatabaseError
+     */
     public function findById(int $id)
     {
         $stmt = self::$database->query('SELECT * FROM ' . $this->table . ' WHERE id = :id',
@@ -48,12 +53,22 @@ abstract class Model implements ModelInterface
         return $row;
     }
 
-    public function add(array $data = []): bool
+    /**
+     * @param array $data
+     * @return int
+     * @throws Exception\DatabaseError
+     */
+    public function add(array $data = []): int
     {
         return self::$database->insert($this->table, $data);
     }
 
-    public function update(array $data = []): bool
+    /**
+     * @param array $data
+     * @return int
+     * @throws Exception\DatabaseError
+     */
+    public function update(array $data = []): int
     {
         return self::$database->update($this->table, $data);
     }
@@ -64,7 +79,7 @@ abstract class Model implements ModelInterface
      */
     public function count(): int
     {
-        $stmt = self::$database->query('SELECT count(*) AS cnt FROM ' . $this->table);
+        $stmt = self::$database->query('SELECT count(id) AS cnt FROM ' . $this->table);
 
         $row = $stmt->fetch();
         return $row['cnt'];

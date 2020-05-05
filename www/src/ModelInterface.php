@@ -11,9 +11,9 @@ interface ModelInterface
 
     public function setSortOrder(string $order): void;
 
-    public function add(array $data = []): bool;
+    public function add(array $data = []): int;
 
-    public function update(array $data = []): bool;
+    public function update(array $data = []): int;
 
     public function count(): int;
 

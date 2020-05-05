@@ -19,7 +19,9 @@ class Database
     {
         $errorInfo = $stmt->errorInfo();
         if(count($errorInfo) == 3){
-            return $errorInfo[0]. ' : ' . $errorInfo[2];
+            [$sqlState, $driverCode, $driverMessage] = $errorInfo;
+            return sprintf('SQLSTATE: %s; Error message: %s; Error code: %s',
+                $sqlState, $driverMessage, $driverCode);
         } else {
             return '';
         }
@@ -28,20 +30,37 @@ class Database
     /**
      * @param string $sql
      * @param array $params
-     * @return bool|\PDOStatement
+     * @return \PDOStatement
      * @throws DatabaseError
      */
-    public function query(string $sql, array $params = [])
+    private function prepareAndExecute(string $sql, array $data): \PDOStatement
     {
         $stmt = $this->pdo->prepare($sql);
-        if ($stmt->execute($params)) {
+        if ($stmt && $stmt->execute($data)) {
             return $stmt;
         } else {
             throw new DatabaseError($this->getErrorMessage($stmt));
         }
     }
 
-    public function insert(string $table, array $data): bool
+    /**
+     * @param string $sql
+     * @param array $data
+     * @return \PDOStatement
+     * @throws DatabaseError
+     */
+    public function query(string $sql, array $data = []): \PDOStatement
+    {
+        return $this->prepareAndExecute($sql, $data);
+    }
+
+    /**
+     * @param string $table
+     * @param array $data
+     * @return int
+     * @throws DatabaseError
+     */
+    public function insert(string $table, array $data): int
     {
         if (!$data) {
             return false;
@@ -54,12 +73,18 @@ class Database
             array_keys($data)
         ));
         $sql = sprintf('INSERT INTO %s(%s) VALUES(%s)', $table, $fieldsQuery, $valuesQuery);
-        $stmt = $this->pdo->prepare($sql);
 
-        return $stmt->execute($data);
+        $stmt = $this->prepareAndExecute($sql, $data);
+        return $stmt->rowCount();
     }
 
-    public function update(string $table, array $data): bool
+    /**
+     * @param string $table
+     * @param array $data
+     * @return int
+     * @throws DatabaseError
+     */
+    public function update(string $table, array $data): int
     {
         if (!$data) {
             return false;
@@ -71,8 +96,8 @@ class Database
             array_keys($data)
         ));
         $sql = sprintf('UPDATE %s SET %s WHERE id=:id', $table, $valuesQuery);
-        $stmt = $this->pdo->prepare($sql);
 
-        return $stmt->execute($data);
+        $stmt = $this->prepareAndExecute($sql, $data);
+        return $stmt->rowCount();
     }
 }

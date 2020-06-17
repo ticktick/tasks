@@ -22,6 +22,7 @@ services:
       image: postgres
       working_dir: /application
       volumes:
+        - ./images/postgres/init.sql:/docker-entrypoint-initdb.d/init.sql
         - .:/application
       restart: always
       environment:

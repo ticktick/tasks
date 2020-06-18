@@ -3,6 +3,9 @@
 namespace Core;
 
 use Core\Exception\ViewError;
+use \Twig\Loader\FilesystemLoader;
+use \Twig\Environment;
+use \Twig\Error\Error;
 
 class View
 {
@@ -12,11 +15,10 @@ class View
     private $template;
     private $twig;
 
-    public function __construct()
+    public function __construct(array $config)
     {
-        // @TODO move to config
-        $loader = new \Twig\Loader\FilesystemLoader('/var/www/app/templates');
-        $this->twig = new \Twig\Environment($loader);
+        $loader = new FilesystemLoader($config['templates_path']);
+        $this->twig = new Environment($loader);
     }
 
     /**
@@ -28,7 +30,7 @@ class View
     {
         try {
             $this->template = $this->twig->load($template);
-        } catch (\Twig\Error\Error $e) {
+        } catch (Error $e) {
             throw new ViewError($e->getMessage());
         }
         return $this;
@@ -43,9 +45,7 @@ class View
     public function getContent(): string
     {
         ob_start();
-
         echo $this->template->render($this->data);
-
         return ob_get_clean();
     }
 }

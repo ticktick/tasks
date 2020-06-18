@@ -8,10 +8,14 @@ use Core\Exception\HttpRedirect;
 
 class Application
 {
+    /** @var string */
+    private $content = '';
     /** @var Request */
     private $request;
     /** @var array */
     private $config;
+    /** @var View */
+    private $view;
     /** @var ModelFactory */
     private $modelFactory;
 
@@ -19,7 +23,7 @@ class Application
     {
         $this->setConfig($config);
         $this->setRequest(new Request($config));
-
+        $this->setView(new View($config['view']));
         $modelFactory = new ModelFactory($config['database']);
         $this->setModelFactory($modelFactory);
     }
@@ -28,32 +32,20 @@ class Application
     {
         try {
             $controller = $this->getController();
-            $controller->init();
-
-            if (!method_exists($controller, $this->getActionName())) {
-                throw new ActionNotExists();
-            }
-
-            $controller->{$this->getActionName()}();
+            $this->runAction($controller, $this->getActionName());
             $view = $controller->getView();
             $content = $view->getContent();
         } catch (HttpRedirect $e) {
-            header('location: ' . $e->getUrl());
-            return true;
+            return $this->redirect($e);
         } catch (ControllerNotExists | ActionNotExists $e) {
-            header('HTTP/1.1 404 Not found');
-            trigger_error($e->getMessage(), E_USER_WARNING);
+            $this->notFoundError($e);
             $content = 'Страница не найдена';
         } catch (\Exception $e) {
-            header('HTTP/1.1 500 Internal Server Error');
-            trigger_error($e->getMessage(), E_USER_WARNING);
+            $this->internalError($e);
             $content = 'Произошла внутренняя ошибка.';
         }
 
-        $this->render($content);
-        if (!empty($bottomContent)) {
-            $this->render($bottomContent);
-        }
+        $this->setContent($content);
         return true;
     }
 
@@ -77,6 +69,16 @@ class Application
         return $this->config;
     }
 
+    public function setView(View $view): void
+    {
+        $this->view = $view;
+    }
+
+    public function getView(): View
+    {
+        return $this->view;
+    }
+
     public function setModelFactory(ModelFactory $modelFactory): void
     {
         $this->modelFactory = $modelFactory;
@@ -85,6 +87,16 @@ class Application
     public function getModelFactory(): ModelFactory
     {
         return $this->modelFactory;
+    }
+
+    private function setContent($content): void
+    {
+        $this->content = $content;
+    }
+
+    public function getContent(): string
+    {
+        return $this->content;
     }
 
     /**
@@ -96,13 +108,53 @@ class Application
         if (!class_exists($controllerClassName)) {
             throw new ControllerNotExists();
         }
-        return new $controllerClassName($this->getRequest(), $this->getConfig(), $this->getModelFactory());
+        return new $controllerClassName($this);
     }
 
-    private function render($content): bool
+    /**
+     * @param ControllerInterface $controller
+     * @param string $actionName
+     * @throws ActionNotExists
+     */
+    private function runAction(ControllerInterface $controller, string $actionName): void
     {
-        echo $content;
+        if (!$this->isActionExists($controller, $this->getActionName())) {
+            throw new ActionNotExists();
+        }
+        $controller->{$actionName}();
+    }
+
+    private function isActionExists(ControllerInterface $controller, string $actionName): bool
+    {
+        return method_exists($controller, $actionName);
+    }
+
+    private function setHeader(string $header)
+    {
+        header($header);
+    }
+
+    private function redirect(HttpRedirect $e): bool
+    {
+        $this->setHeader('location: ' . $e->getUrl());
         return true;
+    }
+
+    private function notFoundError(\Exception $e): void
+    {
+        $this->setHeader('HTTP/1.1 404 Not found');
+        $this->logWarning($e);
+    }
+
+    private function internalError(\Exception $e): void
+    {
+        $this->setHeader('HTTP/1.1 500 Internal Server Error');
+        $this->logWarning($e);
+    }
+
+    private function logWarning(\Exception $e)
+    {
+        trigger_error($e->getMessage(), E_USER_WARNING);
     }
 
     private function getActionName(): string

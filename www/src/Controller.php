@@ -16,21 +16,12 @@ abstract class Controller implements ControllerInterface
     /** @var View */
     public $view;
 
-    public function __construct(Request $request, array $config, ModelFactory $modelFactory)
+    public function __construct(Application $application)
     {
-        $this->request = $request;
-        $this->config = $config;
-        $this->modelFactory = $modelFactory;
-    }
-
-    public function init(): void
-    {
-        $this->setView(new View());
-    }
-
-    public function setView(View $view): void
-    {
-        $this->view = $view;
+        $this->request = $application->getRequest();
+        $this->config = $application->getConfig();
+        $this->modelFactory = $application->getModelFactory();
+        $this->view = $application->getView();
     }
 
     public function getView(): View

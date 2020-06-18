@@ -7,3 +7,4 @@ use Symfony\Component\Yaml\Yaml;
 $config = Yaml::parse(file_get_contents(__DIR__.'/config/common.yml'));
 $application = new Application($config);
 $application->run();
+echo $application->getContent();

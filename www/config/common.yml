@@ -1,5 +1,8 @@
 items_per_page: 3
 
+view:
+  templates_path: /var/www/app/templates
+
 admin:
   name: admin
   password: 123
